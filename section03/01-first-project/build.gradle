@@ -1,0 +1,15 @@
+/**
+ * creates a task
+ * and print out a message to the console
+ * */
+task firstTask {
+    println "Gradle Rocks!"
+}
+
+println 'Start'
+task secondTask {
+    doLast(){
+        println "Gradle Rocks Again!"
+    }
+}
+println 'End'
