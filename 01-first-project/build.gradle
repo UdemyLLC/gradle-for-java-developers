@@ -1,0 +1,24 @@
+/**
+ * defines a task
+ * and print out a message to the console
+ * */
+task firstTask {
+    println "Gradle Rocks!"
+}
+
+// This line prints out in the configuration stage
+println "Start"
+
+/**
+ * defines a task
+ * and print out a message to the console
+ * in the execution phase
+ * */
+task secondTask {
+    doLast(){
+        println "Gradle Rocks Again!"
+    }
+}
+
+// This line prints out in the configuration stage
+println "End"

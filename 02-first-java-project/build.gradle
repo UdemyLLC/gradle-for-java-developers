@@ -1,0 +1,126 @@
+plugins {
+    // includes the java plugin
+    // and provides tasks to compile a java application,
+    // run unit tests
+    // and create jar files
+    id "application"
+}
+
+// Setting values for some default project properties
+project.version = "1.0"
+project.description = "First Java Project"
+
+// Setting a custom property
+project.ext.xyz = "My custom property"
+
+// Printing project properties to the console
+// during the configuration phase
+println "Project Version: ${project.version}"
+println "Project Description: ${project.description}"
+println "Project Directory: ${project.projectDir}"
+println "Build Directory: ${project.buildDir}"
+println "Project Path: ${project.path}"
+println "Parent Project: ${project.parent}"
+println "Custom Property xyz: ${project.xyz}"
+
+
+project.repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
+}
+
+project.dependencies {
+    // Use JUnit Jupiter for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
+
+    // This dependency is used by the application.
+    implementation 'com.google.guava:guava:32.1.3-jre'
+}
+
+project.application {
+    // Define the main class of the application
+    mainClass = 'first.java.project.App'
+}
+
+project.tasks.test {
+    useJUnitPlatform()  // Enable JUnit 5
+}
+
+/**
+ * Defines a task named 'firstTask'.
+ * This task prints out a message
+ * and the value of a custom project property 'xyz'.
+ */
+project.task("firstTask", {
+    doLast() {
+        println 'this is just a first task'
+        println project.xyz
+    }
+})
+
+/**
+ * Shorthand syntax for defining tasks
+ */
+task secondTask {
+    doLast {
+        println "This is a second task"
+    }
+}
+
+/**
+ * Registers a task named 'thirdTask' in the project.
+ */
+project.tasks.register("thirdTask") {
+    // Executes at the start of the task during execution phase
+    doFirst {
+        println "thirdTask from the doFirst action."
+    }
+
+    // Runs during the configuration phase when the build script is evaluated
+    println "this should be printed during configuration phase."
+
+    // Executes at the end of the task during execution phase
+    doLast {
+        println "thirdTask from the doLast action."
+    }
+}
+
+/**
+ * Defines the 'deployToStage' task.
+ * It depends on the 'CleanUpFiles' task.
+ * Once the cleanup is complete it prints a done message.
+ */
+project.tasks.register("deployToStage") {
+    dependsOn("CleanUpFiles")  // Ensures 'CleanUpFiles' runs first
+    doLast {
+        def abc = "abc"
+        println "Deploy to stage done! for $abc"
+    }
+}
+
+/**
+ * Defines the 'deployToProd' task.
+ * It depends on the 'deployToStage' task.
+ * Once the cleanup is complete it prints a done message.
+ */
+project.tasks.register("deployToProd") {
+    dependsOn "deployToStage"  // Ensures 'deployToStage' runs first
+    doLast {
+        println 'Deploy to prod done!'
+    }
+}
+
+/**
+ * Defines the 'CleanUpFiles' task.
+ * It simply prints a message indicating
+ * that the cleanup process is complete.
+ */
+project.tasks.register("CleanUpFiles", {
+    doLast {
+        println "Cleaning working directory"
+    }
+})
+
+// when no task is specified on the command line,
+// Gradle will execute the 'CleanUpFiles' task by default.
+defaultTasks "CleanUpFiles"
